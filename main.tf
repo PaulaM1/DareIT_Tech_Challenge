@@ -17,17 +17,17 @@ resource "google_storage_bucket_object" "static_site_src" {
   name   = "website/index.html"
   source = "website/index.html"
   bucket = google_storage_bucket.website.name
-  
+
 }
 
 # Reserve an external IP
 resource "google_compute_global_address" "website" {
-  name     = "website-lb-ip"
+  name = "website-lb-ip"
 }
 
 #Create the managed DNS zone
 resource "google_dns_managed_zone" "dns_zone" {
-  name  = "dareit-challenge-dns-zone"
+  name     = "dareit-challenge-dns-zone"
   dns_name = "dareit.challenge.com."
 }
 
@@ -61,14 +61,14 @@ resource "google_compute_managed_ssl_certificate" "website_cert" {
 resource "google_compute_url_map" "website" {
   name            = "website-url-map"
   default_service = google_compute_backend_bucket.website-backend.self_link
-    host_rule {
-      hosts        = ["*"] #anything
-      path_matcher = "allpaths"
+  host_rule {
+    hosts        = ["*"] #anything
+    path_matcher = "allpaths"
   }
-    path_matcher {
-      name            = "allpaths"
-      default_service = google_compute_backend_bucket.website-backend.self_link
-    }
+  path_matcher {
+    name            = "allpaths"
+    default_service = google_compute_backend_bucket.website-backend.self_link
+  }
 }
 
 # GCP target proxy - Load Balancer
